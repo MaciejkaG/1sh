@@ -43,7 +43,14 @@ export function CreateLinkForm({
         onSubmit={form.handleSubmit(
           async (values: z.infer<typeof createLinkSchema>) => {
             const res = await handleSubmit(values);
-            window.turnstile.reset(widgetIdRef.current);
+            if (widgetIdRef.current) {
+              (
+                window as Window &
+                  typeof globalThis & {
+                    turnstile: { reset: (id: string) => void };
+                  }
+              ).turnstile.reset(widgetIdRef.current);
+            }
             if (res) {
               form.reset();
             }
