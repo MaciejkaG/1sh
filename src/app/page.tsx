@@ -19,7 +19,7 @@ export default function Home(): React.JSX.Element {
 
   const handleSubmit = async (values: z.infer<typeof createLinkSchema>) => {
     try {
-      const res: AxiosResponse = await ax.post("/link", { url: values.url });
+      const res: AxiosResponse = await ax.post("/link", values);
 
       setResultLink(`${process.env.NEXT_PUBLIC_API_URL}/${res.data.id}`);
     } catch (err: unknown) {
