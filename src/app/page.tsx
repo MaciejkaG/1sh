@@ -47,18 +47,17 @@ export default function Home(): React.JSX.Element {
 
   return (
     <div className="container mx-auto mt-4 text-center">
-      <h1 className="font-black text-2xl">1sh</h1>
+      <h1 className="font-black italic text-2xl">1sh</h1>
       <p>The URL shortener.</p>
       <CreateLinkForm handleSubmit={handleSubmit} />
       {resultLink && (
-        <div className="mx-auto mt-4 w-sm space-y-2">
+        <div className="mx-auto px-2 mt-4 w-sm max-w-full space-y-2">
           <Label htmlFor="short-link">Your shortened link</Label>
           <div className="relative">
             <Input
               id="short-link"
               type="text"
               value={resultLink}
-              // disabled
               readOnly
               className="flex h-12 w-full cursor-default"
             />
@@ -74,11 +73,6 @@ export default function Home(): React.JSX.Element {
                 <CopyIcon className="h-4 w-4 text-gray-500" />
               )}
             </Button>
-            {/* {copied && (
-              <p className="text-sm text-green-600 font-medium">
-                Copied to clipboard!
-              </p>
-            )} */}
           </div>
         </div>
       )}

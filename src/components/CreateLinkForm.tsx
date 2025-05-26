@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import Turnstile from "react-turnstile";
 import {
   Form,
   FormField,
@@ -15,6 +16,7 @@ import {
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { createLinkSchema } from "@/lib/schemas";
+import Link from "next/link";
 
 export function CreateLinkForm({
   handleSubmit,
@@ -25,12 +27,16 @@ export function CreateLinkForm({
     resolver: zodResolver(createLinkSchema),
     defaultValues: {
       url: "",
+      turnstileToken: "",
     },
   });
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="w-sm mx-auto">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="w-sm max-w-full px-2 mx-auto space-y-4"
+      >
         <FormField
           control={form.control}
           name="url"
@@ -39,18 +45,46 @@ export function CreateLinkForm({
               <FormLabel>Your long URL</FormLabel>
               <div className="flex gap-2">
                 <FormControl className="flex-1">
-                  <Input placeholder="https://1sh.pl/" {...field} />
+                  <Input placeholder="https://example.com/" {...field} />
                 </FormControl>
-                <Button type="submit">Shorten</Button>
+                <Button type="submit" disabled={!form.watch("turnstileToken")}>
+                  Shorten
+                </Button>
               </div>
-              <FormDescription>
-                After you press &quot;Shorten&quot;, you will receive a
-                shortened version of the provided URL.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="turnstileToken"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Turnstile
+                  sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                  onVerify={(token: string) => {
+                    field.onChange(token);
+                  }}
+                  onError={() => {
+                    field.onChange("");
+                  }}
+                  onExpire={() => {
+                    field.onChange("");
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormDescription>
+          By pressing &quot;Shorten&quot;, you accept our{" "}
+          <Link href="/terms">Terms</Link> and{" "}
+          <Link href="/privacy">Privacy Policy</Link>.
+        </FormDescription>
       </form>
     </Form>
   );
