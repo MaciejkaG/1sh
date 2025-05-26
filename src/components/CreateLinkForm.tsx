@@ -17,11 +17,15 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { createLinkSchema } from "@/lib/schemas";
 import Link from "next/link";
+import { Loader2Icon } from "lucide-react";
+import { useRef } from "react";
 
 export function CreateLinkForm({
   handleSubmit,
+  isSubmitting,
 }: {
-  handleSubmit: (values: z.infer<typeof createLinkSchema>) => void;
+  handleSubmit: (values: z.infer<typeof createLinkSchema>) => Promise<boolean>;
+  isSubmitting: boolean;
 }): React.JSX.Element {
   const form = useForm<z.infer<typeof createLinkSchema>>({
     resolver: zodResolver(createLinkSchema),
@@ -31,10 +35,20 @@ export function CreateLinkForm({
     },
   });
 
+  const widgetIdRef = useRef<string | null>(null);
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(handleSubmit)}
+        onSubmit={form.handleSubmit(
+          async (values: z.infer<typeof createLinkSchema>) => {
+            const res = await handleSubmit(values);
+            window.turnstile.reset(widgetIdRef.current);
+            if (res) {
+              form.reset();
+            }
+          }
+        )}
         className="w-sm max-w-full px-2 mx-auto space-y-4"
       >
         <FormField
@@ -48,7 +62,11 @@ export function CreateLinkForm({
                   <Input placeholder="https://example.com/" {...field} />
                 </FormControl>
                 <Button type="submit" disabled={!form.watch("turnstileToken")}>
-                  Shorten
+                  {isSubmitting ? (
+                    <Loader2Icon className="w-4 h-4" />
+                  ) : (
+                    <>Shorten</>
+                  )}
                 </Button>
               </div>
               <FormMessage />
@@ -72,6 +90,9 @@ export function CreateLinkForm({
                   }}
                   onExpire={() => {
                     field.onChange("");
+                  }}
+                  onLoad={(widgetId: string) => {
+                    widgetIdRef.current = widgetId;
                   }}
                 />
               </FormControl>
