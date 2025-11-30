@@ -1,0 +1,387 @@
+import { ApiEndpoint } from '@/components/docs/ApiEndpoint';
+
+# API Reference
+
+Complete reference for all 1sh API endpoints with interactive examples.
+
+## Base URL
+
+All API requests should be made to:
+```
+https://1sh.dev/api/v1
+```
+
+## Authentication
+
+1sh uses a token-based system for link management:
+- **No API keys required** for most operations
+- **Management tokens** are returned when creating links
+- **Turnstile verification** required for link creation
+
+---
+
+## Create Short Link
+
+Create a new short link with optional custom alias and expiration.
+
+<ApiEndpoint
+  method="POST"
+  path="/api/v1/link"
+  description="Creates a new short link. Returns a management token for future operations."
+  requestBody={{
+    type: "object",
+    properties: {
+      url: {
+        type: "string",
+        required: true,
+        description: "The URL to shorten (must be valid HTTP/HTTPS)",
+        example: "https://example.com/very/long/path"
+      },
+      customAlias: {
+        type: "string",
+        required: false,
+        description: "Custom short code (3-50 characters, alphanumeric and hyphens only)",
+        example: "my-custom-link"
+      },
+      expiresAt: {
+        type: "string",
+        required: false,
+        description: "ISO 8601 date string for link expiration",
+        example: "2024-12-31T23:59:59Z"
+      },
+      turnstileToken: {
+        type: "string",
+        required: true,
+        description: "Cloudflare Turnstile verification token",
+        example: "0.ABC123..."
+      }
+    }
+  }}
+  responseSchema={{
+    type: "object",
+    properties: {
+      success: { type: "boolean", description: "Always true for successful responses" },
+      data: {
+        type: "object",
+        properties: {
+          id: { type: "string", description: "Unique link identifier" },
+          shortCode: { type: "string", description: "The generated or custom short code" },
+          shortUrl: { type: "string", description: "Complete short URL" },
+          originalUrl: { type: "string", description: "The original URL" },
+          managementToken: { type: "string", description: "Token for managing this link" },
+          expiresAt: { type: "string", description: "Expiration date (if set)" },
+          createdAt: { type: "string", description: "Creation timestamp" }
+        }
+      }
+    },
+    required: ["success", "data"]
+  }}
+  errorResponses={[
+    {
+      status: 400,
+      description: "Invalid request data",
+      schema: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", description: "Always false for errors" },
+          error: { type: "string", description: "Human-readable error message" },
+          code: { type: "string", description: "Machine-readable error code" }
+        }
+      }
+    },
+    {
+      status: 409,
+      description: "Custom alias already exists",
+      schema: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", description: "Always false for errors" },
+          error: { type: "string", description: "Custom alias already exists" },
+          code: { type: "string", description: "ALIAS_TAKEN" }
+        }
+      }
+    },
+    {
+      status: 429,
+      description: "Rate limit exceeded",
+      schema: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", description: "Always false for errors" },
+          error: { type: "string", description: "Rate limit exceeded" },
+          code: { type: "string", description: "RATE_LIMIT_EXCEEDED" }
+        }
+      }
+    }
+  ]}
+/>
+
+---
+
+## Get Multiple Links
+
+Retrieve multiple links using their management tokens.
+
+<ApiEndpoint
+  method="GET"
+  path="/api/v1/links"
+  description="Retrieve multiple links by providing their management tokens as query parameters."
+  parameters={[
+    {
+      name: "tokens",
+      type: "string",
+      required: true,
+      description: "Comma-separated list of management tokens",
+      example: "token1,token2,token3"
+    }
+  ]}
+  responseSchema={{
+    type: "object",
+    properties: {
+      success: { type: "boolean", description: "Always true for successful responses" },
+      data: {
+        type: "array",
+        properties: {
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string", description: "Unique link identifier" },
+              shortCode: { type: "string", description: "The short code" },
+              shortUrl: { type: "string", description: "Complete short URL" },
+              originalUrl: { type: "string", description: "The original URL" },
+              clickCount: { type: "number", description: "Total number of clicks" },
+              uniqueClicks: { type: "number", description: "Number of unique visitors" },
+              expiresAt: { type: "string", description: "Expiration date (if set)" },
+              createdAt: { type: "string", description: "Creation timestamp" },
+              lastClickAt: { type: "string", description: "Last click timestamp" }
+            }
+          }
+        }
+      }
+    },
+    required: ["success", "data"]
+  }}
+  errorResponses={[
+    {
+      status: 400,
+      description: "Invalid or missing tokens",
+      schema: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", description: "Always false for errors" },
+          error: { type: "string", description: "Invalid tokens parameter" },
+          code: { type: "string", description: "INVALID_TOKENS" }
+        }
+      }
+    }
+  ]}
+/>
+
+---
+
+## Get Link Analytics
+
+Retrieve detailed analytics for a specific link.
+
+<ApiEndpoint
+  method="GET"
+  path="/api/v1/analytics/[linkId]"
+  description="Get comprehensive analytics data for a link including click history, geographic data, and device information."
+  parameters={[
+    {
+      name: "linkId",
+      type: "string",
+      required: true,
+      description: "The unique identifier of the link",
+      example: "abc123def456"
+    },
+    {
+      name: "token",
+      type: "string",
+      required: true,
+      description: "Management token for the link",
+      example: "mgmt_token_abc123"
+    },
+    {
+      name: "period",
+      type: "string",
+      required: false,
+      description: "Time period for analytics (24h, 7d, 30d, all)",
+      example: "7d"
+    }
+  ]}
+  responseSchema={{
+    type: "object",
+    properties: {
+      success: { type: "boolean", description: "Always true for successful responses" },
+      data: {
+        type: "object",
+        properties: {
+          link: {
+            type: "object",
+            properties: {
+              id: { type: "string", description: "Link identifier" },
+              shortCode: { type: "string", description: "Short code" },
+              originalUrl: { type: "string", description: "Original URL" },
+              createdAt: { type: "string", description: "Creation date" }
+            }
+          },
+          analytics: {
+            type: "object",
+            properties: {
+              totalClicks: { type: "number", description: "Total clicks in period" },
+              uniqueClicks: { type: "number", description: "Unique visitors in period" },
+              clicksByDay: {
+                type: "array",
+                description: "Daily click counts",
+                items: {
+                  type: "object",
+                  properties: {
+                    date: { type: "string", description: "Date (YYYY-MM-DD)" },
+                    clicks: { type: "number", description: "Click count" },
+                    uniqueClicks: { type: "number", description: "Unique clicks" }
+                  }
+                }
+              },
+              topCountries: {
+                type: "array",
+                description: "Top countries by clicks",
+                items: {
+                  type: "object",
+                  properties: {
+                    country: { type: "string", description: "Country name" },
+                    clicks: { type: "number", description: "Click count" }
+                  }
+                }
+              },
+              topDevices: {
+                type: "array",
+                description: "Top devices by clicks",
+                items: {
+                  type: "object",
+                  properties: {
+                    device: { type: "string", description: "Device type" },
+                    clicks: { type: "number", description: "Click count" }
+                  }
+                }
+              },
+              topReferrers: {
+                type: "array",
+                description: "Top referrer domains",
+                items: {
+                  type: "object",
+                  properties: {
+                    referrer: { type: "string", description: "Referrer domain" },
+                    clicks: { type: "number", description: "Click count" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    required: ["success", "data"]
+  }}
+  errorResponses={[
+    {
+      status: 401,
+      description: "Invalid or missing management token",
+      schema: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", description: "Always false for errors" },
+          error: { type: "string", description: "Invalid management token" },
+          code: { type: "string", description: "INVALID_TOKEN" }
+        }
+      }
+    },
+    {
+      status: 404,
+      description: "Link not found",
+      schema: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", description: "Always false for errors" },
+          error: { type: "string", description: "Link not found" },
+          code: { type: "string", description: "LINK_NOT_FOUND" }
+        }
+      }
+    }
+  ]}
+/>
+
+---
+
+## Check Alias Availability
+
+Check if a custom alias is available for use.
+
+<ApiEndpoint
+  method="GET"
+  path="/api/v1/alias/availability"
+  description="Check if a custom alias is available before creating a link."
+  parameters={[
+    {
+      name: "alias",
+      type: "string",
+      required: true,
+      description: "The custom alias to check",
+      example: "my-custom-link"
+    }
+  ]}
+  responseSchema={{
+    type: "object",
+    properties: {
+      success: { type: "boolean", description: "Always true for successful responses" },
+      data: {
+        type: "object",
+        properties: {
+          alias: { type: "string", description: "The checked alias" },
+          available: { type: "boolean", description: "Whether the alias is available" }
+        }
+      }
+    },
+    required: ["success", "data"]
+  }}
+  errorResponses={[
+    {
+      status: 400,
+      description: "Invalid alias format",
+      schema: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", description: "Always false for errors" },
+          error: { type: "string", description: "Invalid alias format" },
+          code: { type: "string", description: "INVALID_ALIAS" }
+        }
+      }
+    }
+  ]}
+/>
+
+## Error Codes Reference
+
+| Code | Description | HTTP Status |
+|------|-------------|-------------|
+| `INVALID_URL` | The provided URL is not valid | 400 |
+| `INVALID_ALIAS` | Custom alias format is invalid | 400 |
+| `ALIAS_TAKEN` | Custom alias already exists | 409 |
+| `INVALID_EXPIRATION` | Expiration date is invalid | 400 |
+| `INVALID_TURNSTILE` | Turnstile token is invalid | 400 |
+| `RATE_LIMIT_EXCEEDED` | Too many requests | 429 |
+| `LINK_NOT_FOUND` | Link does not exist | 404 |
+| `INVALID_TOKEN` | Management token is invalid | 401 |
+| `LINK_EXPIRED` | Link has expired | 410 |
+| `INTERNAL_ERROR` | Server error occurred | 500 |
+
+## Rate Limits
+
+| Endpoint | Limit | Window |
+|----------|-------|--------|
+| `POST /api/v1/link` | 10 requests | 1 minute |
+| `GET /api/v1/links` | 100 requests | 1 minute |
+| `GET /api/v1/analytics/*` | 100 requests | 1 minute |
+| `GET /api/v1/alias/availability` | 60 requests | 1 minute |
+
+Rate limits are applied per IP address. When exceeded, the API returns a 429 status code with a `Retry-After` header indicating when to retry.

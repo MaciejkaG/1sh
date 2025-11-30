@@ -1,0 +1,336 @@
+import { ApiEndpoint } from '@/components/docs/ApiEndpoint';
+
+# Interactive Examples
+
+Try out common 1sh API use cases with real examples you can test directly in your browser.
+
+## Quick Start Examples
+
+### Example 1: Create a Simple Short Link
+
+The most basic use case - shorten a long URL.
+
+<ApiEndpoint
+  method="POST"
+  path="/api/v1/link"
+  description="Create a short link for a long URL. This example uses a sample Turnstile token - in production, you'll need to implement Turnstile verification."
+  requestBody={{
+    type: "object",
+    properties: {
+      url: {
+        type: "string",
+        required: true,
+        description: "The URL to shorten",
+        example: "https://docs.google.com/document/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit"
+      },
+      turnstileToken: {
+        type: "string",
+        required: true,
+        description: "Turnstile verification token (use 'demo-token' for testing)",
+        example: "demo-token"
+      }
+    }
+  }}
+  responseSchema={{
+    type: "object",
+    properties: {
+      success: { type: "boolean" },
+      data: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          shortCode: { type: "string" },
+          shortUrl: { type: "string" },
+          originalUrl: { type: "string" },
+          managementToken: { type: "string" },
+          createdAt: { type: "string" }
+        }
+      }
+    }
+  }}
+/>
+
+### Example 2: Create a Custom Branded Link
+
+Create a memorable short link with a custom alias.
+
+<ApiEndpoint
+  method="POST"
+  path="/api/v1/link"
+  description="Create a short link with a custom alias for branding purposes."
+  requestBody={{
+    type: "object",
+    properties: {
+      url: {
+        type: "string",
+        required: true,
+        description: "The URL to shorten",
+        example: "https://github.com/yourusername/awesome-project"
+      },
+      customAlias: {
+        type: "string",
+        required: false,
+        description: "Custom memorable alias",
+        example: "awesome-project"
+      },
+      turnstileToken: {
+        type: "string",
+        required: true,
+        description: "Turnstile verification token",
+        example: "demo-token"
+      }
+    }
+  }}
+  responseSchema={{
+    type: "object",
+    properties: {
+      success: { type: "boolean" },
+      data: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          shortCode: { type: "string" },
+          shortUrl: { type: "string" },
+          originalUrl: { type: "string" },
+          managementToken: { type: "string" },
+          createdAt: { type: "string" }
+        }
+      }
+    }
+  }}
+/>
+
+### Example 3: Create a Temporary Link
+
+Create a link that expires after a specific date.
+
+<ApiEndpoint
+  method="POST"
+  path="/api/v1/link"
+  description="Create a short link that automatically expires on a specific date."
+  requestBody={{
+    type: "object",
+    properties: {
+      url: {
+        type: "string",
+        required: true,
+        description: "The URL to shorten",
+        example: "https://example.com/limited-time-offer"
+      },
+      customAlias: {
+        type: "string",
+        required: false,
+        description: "Optional custom alias",
+        example: "summer-sale"
+      },
+      expiresAt: {
+        type: "string",
+        required: false,
+        description: "Expiration date (ISO 8601 format)",
+        example: "2024-12-31T23:59:59Z"
+      },
+      turnstileToken: {
+        type: "string",
+        required: true,
+        description: "Turnstile verification token",
+        example: "demo-token"
+      }
+    }
+  }}
+  responseSchema={{
+    type: "object",
+    properties: {
+      success: { type: "boolean" },
+      data: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          shortCode: { type: "string" },
+          shortUrl: { type: "string" },
+          originalUrl: { type: "string" },
+          managementToken: { type: "string" },
+          expiresAt: { type: "string" },
+          createdAt: { type: "string" }
+        }
+      }
+    }
+  }}
+/>
+
+## Management Examples
+
+### Example 4: Check Alias Availability
+
+Before creating a custom link, check if your desired alias is available.
+
+<ApiEndpoint
+  method="GET"
+  path="/api/v1/alias/availability"
+  description="Check if a custom alias is available before attempting to create a link with it."
+  parameters={[
+    {
+      name: "alias",
+      type: "string",
+      required: true,
+      description: "The custom alias you want to check",
+      example: "my-brand-2024"
+    }
+  ]}
+  responseSchema={{
+    type: "object",
+    properties: {
+      success: { type: "boolean" },
+      data: {
+        type: "object",
+        properties: {
+          alias: { type: "string" },
+          available: { type: "boolean" }
+        }
+      }
+    }
+  }}
+/>
+
+### Example 5: Retrieve Multiple Links
+
+Get information about multiple links using their management tokens.
+
+<ApiEndpoint
+  method="GET"
+  path="/api/v1/links"
+  description="Retrieve multiple links at once by providing their management tokens. Useful for dashboard applications."
+  parameters={[
+    {
+      name: "tokens",
+      type: "string",
+      required: true,
+      description: "Comma-separated management tokens (use tokens from created links)",
+      example: "token1,token2,token3"
+    }
+  ]}
+  responseSchema={{
+    type: "object",
+    properties: {
+      success: { type: "boolean" },
+      data: {
+        type: "array",
+        properties: {
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              shortCode: { type: "string" },
+              shortUrl: { type: "string" },
+              originalUrl: { type: "string" },
+              clickCount: { type: "number" },
+              uniqueClicks: { type: "number" },
+              createdAt: { type: "string" },
+              lastClickAt: { type: "string" }
+            }
+          }
+        }
+      }
+    }
+  }}
+/>
+
+## Analytics Examples
+
+### Example 6: Get Basic Analytics
+
+Retrieve click analytics for a specific link.
+
+<ApiEndpoint
+  method="GET"
+  path="/api/v1/analytics/[linkId]"
+  description="Get comprehensive analytics for a link. Use the link ID and management token from a previously created link."
+  parameters={[
+    {
+      name: "linkId",
+      type: "string",
+      required: true,
+      description: "Link ID from link creation response",
+      example: "abc123def456"
+    },
+    {
+      name: "token",
+      type: "string",
+      required: true,
+      description: "Management token from link creation",
+      example: "mgmt_abc123def456"
+    },
+    {
+      name: "period",
+      type: "string",
+      required: false,
+      description: "Analytics time period",
+      example: "7d"
+    }
+  ]}
+  responseSchema={{
+    type: "object",
+    properties: {
+      success: { type: "boolean" },
+      data: {
+        type: "object",
+        properties: {
+          link: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              shortCode: { type: "string" },
+              originalUrl: { type: "string" }
+            }
+          },
+          analytics: {
+            type: "object",
+            properties: {
+              totalClicks: { type: "number" },
+              uniqueClicks: { type: "number" },
+              clicksByDay: { type: "array" },
+              topCountries: { type: "array" },
+              topDevices: { type: "array" }
+            }
+          }
+        }
+      }
+    }
+  }}
+/>
+
+## Integration Workflows
+
+### Workflow 1: Complete Link Creation and Management
+
+1. **Check alias availability** (if using custom alias)
+2. **Create the link** with your desired settings
+3. **Store the management token** for future operations
+4. **Monitor analytics** to track performance
+
+### Workflow 2: Bulk Link Management
+
+1. **Create multiple links** and collect management tokens
+2. **Retrieve all links** using the bulk endpoint
+3. **Get analytics** for high-performing links
+4. **Update or recreate** expired links as needed
+
+### Workflow 3: Campaign Tracking
+
+1. **Create branded links** for each campaign
+2. **Set expiration dates** for time-limited campaigns
+3. **Monitor real-time analytics** during campaign
+4. **Export data** for reporting and analysis
+
+## Testing Tips
+
+- Use `demo-token` as the Turnstile token for testing (production requires real Turnstile implementation)
+- Save management tokens from link creation to test analytics endpoints
+- Try different alias formats to understand validation rules
+- Test error scenarios by using invalid data
+- Use the browser's network tab to see actual HTTP requests and responses
+
+## Next Steps
+
+- [Integration Guide](/docs/integration) - Learn how to integrate 1sh into your application
+- [Best Practices](/docs/best-practices) - Tips for optimal API usage
+- [SDKs and Libraries](/docs/sdks) - Official and community SDKs

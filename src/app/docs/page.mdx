@@ -1,0 +1,99 @@
+# 1sh API Documentation
+
+Welcome to the 1sh URL shortener API documentation. This comprehensive guide will help you integrate our URL shortening service into your applications.
+
+## Overview
+
+1sh provides a simple, fast, and reliable URL shortening service with advanced analytics and management features. Our API is designed to be developer-friendly with clear endpoints, comprehensive error handling, and interactive documentation.
+
+### Key Features
+
+- **Custom Short Links**: Create memorable short URLs with custom aliases
+- **Advanced Analytics**: Track clicks, unique visitors, geographic data, and device information
+- **Token-Based Management**: Manage your links without creating an account
+- **Real-time Tracking**: Get instant analytics and click data
+- **Developer-Friendly**: RESTful API with JSON responses and comprehensive error handling
+
+## Quick Start
+
+### 1. Create Your First Short Link
+
+```bash
+curl -X POST https://1sh.dev/api/v1/link \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://example.com",
+    "customAlias": "my-link",
+    "turnstileToken": "your-turnstile-token"
+  }'
+```
+
+### 2. Access Your Link
+
+Visit `https://1sh.dev/my-link` to be redirected to your original URL.
+
+### 3. View Analytics
+
+Use the management token returned from link creation to view analytics:
+
+```bash
+curl -X GET "https://1sh.dev/api/v1/analytics/your-link-id?token=your-management-token"
+```
+
+## API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/link` | POST | Create a new short link |
+| `/api/v1/links` | GET | Retrieve multiple links by tokens |
+| `/api/v1/analytics/[linkId]` | GET | Get analytics for a specific link |
+| `/api/v1/redirect/[shortCode]` | GET | Redirect to original URL (internal) |
+
+## Authentication
+
+1sh uses a token-based authentication system that doesn't require user accounts:
+
+- **Management Tokens**: Returned when creating links, used to access link data
+- **No API Keys**: Most endpoints work without authentication
+- **Turnstile Protection**: Link creation requires Cloudflare Turnstile verification
+
+## Rate Limits
+
+- **Link Creation**: 10 requests per minute per IP
+- **Analytics**: 100 requests per minute per IP
+- **Redirects**: No limit (cached at CDN level)
+
+## Error Handling
+
+All API responses follow a consistent format:
+
+```json
+{
+  "success": true,
+  "data": { /* response data */ }
+}
+```
+
+Error responses include detailed error codes:
+
+```json
+{
+  "success": false,
+  "error": "Custom alias already exists",
+  "code": "ALIAS_TAKEN"
+}
+```
+
+## Next Steps
+
+- [API Reference](/docs/api) - Detailed endpoint documentation
+- [Interactive Examples](/docs/examples) - Try the API in your browser
+- [Integration Guide](/docs/integration) - Best practices and code examples
+
+## Support
+
+If you need help or have questions:
+
+- Check our [FAQ](/docs/faq)
+- Review [common issues](/docs/troubleshooting)
+- Contact us at [support@1sh.dev](mailto:support@1sh.dev)
