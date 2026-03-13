@@ -30,7 +30,7 @@ export function Footer() {
         <div className="flex flex-col gap-2">
           <span className="text-base">1sh - The URL shortener.</span>
           <p className="text-muted-foreground">
-            Copyright © 2025 Maciej Gomoła
+            Copyright © {new Date().getFullYear()} Maciej Gomoła
             <br />
             Designed by <Link href="https://gomola.dev/">Maciej Gomoła</Link>
           </p>
