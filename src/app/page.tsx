@@ -2,7 +2,7 @@
 
 import { CreateLinkForm } from "@/components/CreateLinkForm";
 import ax from "@/lib/ax";
-import {z} from "zod";
+import { z } from "zod";
 import { createLinkSchema } from "@/lib/schemas";
 import { useState } from "react";
 import { AxiosError, AxiosResponse } from "axios";
@@ -10,6 +10,9 @@ import { CheckIcon, CopyIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertTriangleIcon } from "lucide-react";
+import { Link } from "@/components/ui/link";
 
 export default function Home(): React.JSX.Element {
   const [createError, setCreateError] = useState<string | null>(null);
@@ -26,7 +29,6 @@ export default function Home(): React.JSX.Element {
       setIsSubmitting(true);
       const res: AxiosResponse = await ax.post("/link", values);
 
-      
       setResultLink(`${process.env.NEXT_PUBLIC_API_URL}/${res.data.id}`);
 
       return true;
@@ -89,6 +91,18 @@ export default function Home(): React.JSX.Element {
         </div>
       )}
       {createError && <p className="text-red-400">{createError}</p>}
+      <Alert className="mx-auto my-8 max-w-md border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50">
+        <AlertTitle>1sh needs your support</AlertTitle>
+        <AlertDescription>
+          <p>
+            Developing and maintaining 1sh costs time and money. If you enjoy
+            using it and want it to stay free for everyone, please
+            consider supporting the project by{" "}
+            <Link href="https://ko-fi.com/mcjk">donating</Link> or sharing it
+            with your friends.
+          </p>
+        </AlertDescription>
+      </Alert>
     </div>
   );
 }

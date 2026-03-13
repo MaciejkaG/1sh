@@ -1,36 +1,48 @@
-import Link from "next/link";
-import { PropsWithChildren } from "react";
+import { Link } from "./link";
 
-const FooterLink = (props: PropsWithChildren & { href: string }): React.JSX.Element => {
-  return (
-    <Link className="text-blue-500 hover:underline" href={props.href}>
-      {props.children}
-    </Link>
-  );
-}
+const links = [
+  {
+    name: "contact@1sh.pl",
+    href: "mailto:contact@1sh.pl"
+  },
+  {
+    name: "Terms of Service",
+    href: "/terms"
+  },
+  {
+    name: "Privacy Policy",
+    href: "/privacy"
+  },
+  {
+    name: "Donate",
+    href: "https://ko-fi.com/mcjk"
+  },
+  {
+    name: "GitHub",
+    href: "https://github.com/MaciejkaG/1sh"
+  }
+];
 
 export function Footer() {
   return (
     <footer className="mt-4 pt-4 mx-2 border-t border-border">
       <div className="w-2xl max-w-full mx-auto px-2 flex justify-between text-sm">
         <div className="flex flex-col gap-2">
-          <span className="text-base">
-            1sh - The URL shortener.
-          </span>
+          <span className="text-base">1sh - The URL shortener.</span>
           <p className="text-muted-foreground">
-            Copyright © 2025 mcjk
+            Copyright © 2025 Maciej Gomoła
             <br />
-            Designed by mcjk
+            Designed by <Link href="https://gomola.dev/">Maciej Gomoła</Link>
           </p>
         </div>
 
         <p className="text-right">
-          <FooterLink href="mailto:contact@1sh.pl">contact@1sh.pl</FooterLink>
-          <br />
-          <FooterLink href="/terms">Terms</FooterLink>
-          <br />
-          <FooterLink href="/privacy">Privacy</FooterLink>
-          <br />
+          {links.map((link, index) => (
+            <span key={link.href}>
+              <Link href={link.href}>{link.name}</Link>
+              <br />
+            </span>
+          ))}
         </p>
       </div>
     </footer>
