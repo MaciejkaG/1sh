@@ -3,6 +3,7 @@ import { Lato } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { Footer } from "@/components/ui/footer";
+import { Analytics } from "@vercel/analytics/next";
 
 const lato = Lato({
   weight: ["400", "700", "900"],
@@ -26,6 +27,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
