@@ -37,7 +37,7 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const response = await signIn.email(
+      await signIn.email(
         {
           email: values.email,
           password: values.password,
@@ -51,7 +51,7 @@ export default function LoginPage() {
           },
         }
       );
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred");
     } finally {
       setIsLoading(false);
@@ -110,7 +110,7 @@ export default function LoginPage() {
       </Form>
 
       <div className="text-center text-sm">
-        Don't have an account?{" "}
+        Don&apos;t have an account?{" "}
         <Link href="/register" className="text-primary hover:underline">
           Sign up
         </Link>

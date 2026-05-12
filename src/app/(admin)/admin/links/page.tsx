@@ -1,7 +1,7 @@
 import { requireAdmin } from "@/lib/session";
 import { db } from "@/db/client";
 import { link, linkEvent, user } from "@/db/schema";
-import { eq, like, count as drizzleCount, and } from "drizzle-orm";
+import { eq, like, count as drizzleCount } from "drizzle-orm";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 

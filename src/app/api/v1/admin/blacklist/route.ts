@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     });
     invalidateBlacklistCache();
     return NextResponse.json({ success: true }, { status: 201 });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ success: false, error: "Pattern already exists." }, { status: 409 });
   }
 }
@@ -47,7 +47,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ success: false, error: "ID is required." }, { status: 400 });
   }
 
-  const result = await db.delete(blacklist).where(eq(blacklist.id, parseInt(id)));
+  await db.delete(blacklist).where(eq(blacklist.id, parseInt(id)));
 
   invalidateBlacklistCache();
 

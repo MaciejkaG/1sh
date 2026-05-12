@@ -38,7 +38,7 @@ export default function RegisterPage() {
     setError(null);
 
     try {
-      const response = await signUp.email(
+      await signUp.email(
         {
           name: values.name,
           email: values.email,
@@ -53,7 +53,7 @@ export default function RegisterPage() {
           },
         }
       );
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred");
     } finally {
       setIsLoading(false);

@@ -37,7 +37,7 @@ export function Footer() {
         </div>
 
         <p className="text-right">
-          {links.map((link, index) => (
+          {links.map((link) => (
             <span key={link.href}>
               <Link href={link.href}>{link.name}</Link>
               <br />

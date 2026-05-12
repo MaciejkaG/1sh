@@ -1,8 +1,5 @@
 "use client";
 
-import { requireAdmin } from "@/lib/session";
-import { db } from "@/db/client";
-import { blacklist } from "@/db/schema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
@@ -20,8 +17,14 @@ import { z } from "zod";
 import { blacklistAddSchema } from "@/lib/schemas";
 import { Trash2 } from "lucide-react";
 
+interface BlacklistPattern {
+  id: number;
+  pattern: string;
+  reason?: string;
+}
+
 export default function AdminBlacklistPage() {
-  const [patterns, setPatterns] = useState<any[]>([]);
+  const [patterns, setPatterns] = useState<BlacklistPattern[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,19 +36,20 @@ export default function AdminBlacklistPage() {
     },
   });
 
-  const fetchPatterns = async () => {
+  const loadPatterns = async () => {
     try {
       const response = await fetch("/api/v1/admin/blacklist");
       if (!response.ok) throw new Error("Failed to fetch patterns");
       const data = await response.json();
       setPatterns(data.patterns);
-    } catch (err) {
+    } catch {
       setError("Failed to load patterns");
     }
   };
 
   useEffect(() => {
-    fetchPatterns();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void loadPatterns();
   }, []);
 
   const onSubmit = async (values: z.infer<typeof blacklistAddSchema>) => {
@@ -65,7 +69,7 @@ export default function AdminBlacklistPage() {
       }
 
       form.reset();
-      await fetchPatterns();
+      await loadPatterns();
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -80,8 +84,8 @@ export default function AdminBlacklistPage() {
       });
 
       if (!response.ok) throw new Error("Failed to delete pattern");
-      await fetchPatterns();
-    } catch (err) {
+      await loadPatterns();
+    } catch {
       setError("Failed to delete pattern");
     }
   };

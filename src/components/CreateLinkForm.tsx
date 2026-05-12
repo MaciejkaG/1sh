@@ -72,6 +72,7 @@ export function CreateLinkForm({
                 <FormControl className="flex-1">
                   <Input placeholder="https://example.com/" {...field} />
                 </FormControl>
+                {/* eslint-disable-next-line react-hooks/incompatible-library */}
                 <Button type="submit" disabled={!form.watch("turnstileToken")}>
                   {isSubmitting ? (
                     <Loader2Icon className="w-4 h-4" />

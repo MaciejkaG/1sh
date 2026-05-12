@@ -1,9 +1,5 @@
 "use client";
 
-import { requireUser } from "@/lib/session";
-import { db } from "@/db/client";
-import { link } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,27 +14,29 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const urlSchema = z.object({
   url: z.string().url("Invalid URL"),
 });
 
-export default async function EditLinkPage({
+export default function EditLinkPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-
-  return <EditLinkPageContent id={id} />;
-}
-
-function EditLinkPageContent({ id }: { id: string }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [id, setId] = useState<string>("");
+
+  useEffect(() => {
+    void (async () => {
+      const { id: resolvedId } = await params;
+      setId(resolvedId);
+    })();
+  }, [params]);
 
   const form = useForm<z.infer<typeof urlSchema>>({
     resolver: zodResolver(urlSchema),
@@ -65,7 +63,7 @@ function EditLinkPageContent({ id }: { id: string }) {
       }
 
       router.push(`/dashboard/${id}`);
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred");
     } finally {
       setIsLoading(false);
