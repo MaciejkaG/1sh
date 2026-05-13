@@ -2,12 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { signUp } from "@/lib/auth-client";
+import { signUp, signIn } from "@/lib/auth-client";
 import { signUpSchema } from "@/lib/schemas";
 import { z } from "zod";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Github } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -22,7 +23,19 @@ import { Button } from "@/components/ui/button";
 export default function RegisterPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [githubLoading, setGithubLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleGitHub = async () => {
+    setGithubLoading(true);
+    setError(null);
+    try {
+      await signIn.social({ provider: "github", callbackURL: "/dashboard" });
+    } catch {
+      setError("GitHub sign in failed");
+      setGithubLoading(false);
+    }
+  };
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
@@ -124,6 +137,26 @@ export default function RegisterPage() {
           </Button>
         </form>
       </Form>
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">or continue with</span>
+        </div>
+      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full"
+        onClick={handleGitHub}
+        disabled={githubLoading}
+      >
+        <Github className="mr-2 h-4 w-4" />
+        {githubLoading ? "Redirecting..." : "GitHub"}
+      </Button>
 
       <div className="text-center text-sm">
         Already have an account?{" "}

@@ -29,7 +29,9 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-hook-form": "^7.75.0",
+    "react-simple-maps": "^3.0.0",
     "react-turnstile": "^1.1.5",
+    "recharts": "^3.8.1",
     "redis": "^5.12.1",
     "tailwind-merge": "^3.6.0",
     "zod": "^4.4.3"
@@ -40,6 +42,7 @@
     "@types/pg": "^8.20.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
+    "@types/react-simple-maps": "^3.0.6",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9.39.4",
     "eslint-config-next": "16.1.6",
