@@ -1,0 +1,132 @@
+export const metadata = {
+  title: "Privacy Policy — 1sh",
+  description: "Privacy Policy for 1sh URL shortener",
+};
+
+## 1sh Privacy Policy
+
+**Effective Date:** 13.05.2026 (13th May 2026)
+
+Your privacy matters. This Privacy Policy explains what data we (Maciej Gomoła, the operator of 1sh) collect, why, and how we use it.
+
+---
+
+### 1\. What We Collect
+
+We may collect or receive:
+
+* The long URL you submit when creating a short link
+* Account information if you register: email address, display name, and (if using GitHub login) your GitHub profile data
+* Click analytics for shortened links: country (derived from Cloudflare headers), HTTP referer, user agent, and a daily-rotating SHA-256 hash of your IP address used only for click deduplication — the raw IP is never stored
+* Anti-spam verification data via Cloudflare Turnstile
+
+---
+
+### 2\. Authentication & Accounts
+
+Account creation is optional. If you register, we store your email, display name, hashed password (email/password login) or OAuth provider token (GitHub login), and session data. Sessions are managed via **Better Auth** and stored in our PostgreSQL database.
+
+Registered users can view, edit, and delete their own shortened links and access per-link click analytics.
+
+---
+
+### 3\. Hosting & Infrastructure
+
+1sh runs on a dedicated server hosted in **France** (European Union). All data — including your account information, shortened links, and analytics — is stored on this server.
+
+We use **Cloudflare** as a reverse proxy and DDoS protection layer. Cloudflare may process your IP address and request metadata. See [Cloudflare's Privacy Policy](https://www.cloudflare.com/privacypolicy/).
+
+We are **no longer hosted on Vercel**, and Vercel no longer processes any data related to this service.
+
+---
+
+### 4\. Analytics
+
+1sh runs its own privacy-respecting click analytics, stored in our PostgreSQL database. When someone visits a short link, we record:
+
+* Country (from Cloudflare's `cf-ipcountry` header — no geolocation lookup performed)
+* HTTP referer
+* User agent string
+* A daily-rotating SHA-256 hash of the visitor's IP address, used solely to deduplicate clicks within a 24-hour window — this hash cannot be reversed to recover the original IP
+
+Analytics are visible **only** to the owner of the short link (when logged in) and to administrators. No analytics are shared with third parties.
+
+---
+
+### 5\. Cookies
+
+We use only **strictly necessary cookies** required for the service to function:
+
+| Cookie | Purpose | Duration |
+|--------|---------|----------|
+| `better-auth.session_token` | Authenticates your logged-in session | Session / persistent (up to 30 days) |
+
+No advertising, tracking, or third-party analytics cookies are set by 1sh.
+
+Cloudflare may set cookies as part of its proxy and bot-mitigation functionality (e.g. `__cf_bm`, `cf_clearance`). These are strictly necessary for network security. See [Cloudflare's Cookie Policy](https://www.cloudflare.com/cookie-policy/).
+
+Because we set only strictly necessary cookies, no cookie consent banner is required.
+
+---
+
+### 6\. Data Retention
+
+| Data | Retention |
+|------|-----------|
+| Shortened links (no account) | **2 years** from creation date, then automatically expired |
+| Shortened links (registered user) | Until deleted by the owner or account deletion |
+| Account data | Until account is deleted |
+| Click analytics (link events) | **2 years** from the event date |
+| Server and application logs | **1 month**, then automatically purged |
+| Session tokens | Up to 30 days, or until sign-out |
+
+---
+
+### 7\. Domain Blacklist
+
+If abuse is reported and confirmed by us, a domain associated with an abusive URL may be added to the domain blacklist. This results in:
+
+* All existing short links pointing to that domain being disabled and removed
+* Permanent prevention of new short links to that domain being created
+
+If you believe your domain was blacklisted in error, you may file a removal request at **contact@1sh.pl** with supporting information. We will review and respond in a reasonable timeframe.
+
+---
+
+### 8\. Your Rights (GDPR)
+
+As the server is located in France (EU), the General Data Protection Regulation (GDPR) applies. You have the right to:
+
+* **Access** personal data we hold about you
+* **Rectify** inaccurate data
+* **Erase** your account and associated data
+* **Object** to or **restrict** processing
+* **Data portability**
+
+To exercise these rights, contact us at **contact@1sh.pl**.
+
+---
+
+### 9\. Deletion Requests
+
+Registered users can delete their own short links directly from the dashboard. To delete your account or request removal of data you do not have direct access to, contact **contact@1sh.pl**.
+
+For anonymous short links (created without an account), we cannot verify ownership. Abuse reports can be submitted to **contact@1sh.pl**.
+
+---
+
+### 10\. Legal Jurisdiction
+
+This service is operated by **Maciej Gomoła** in **Poland**. The server is located in **France** (European Union). Applicable law includes Polish law and relevant EU regulations including the GDPR.
+
+---
+
+### 11\. Changes to This Policy
+
+We may update this Privacy Policy periodically. Updates will be posted here with an updated "Effective Date."
+
+---
+
+## Contact
+
+For any questions, requests, or concerns: **contact@1sh.pl**

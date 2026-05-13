@@ -16,7 +16,7 @@ import {
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { createLinkSchema } from "@/lib/schemas";
-import Link from "next/link";
+import { Link } from "./ui/link";
 import { Loader2Icon } from "lucide-react";
 import { useRef } from "react";
 import { useSession } from "@/lib/auth-client";
