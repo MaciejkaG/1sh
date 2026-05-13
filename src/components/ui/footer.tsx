@@ -25,10 +25,12 @@ const links = [
 
 export function Footer() {
   return (
-    <footer className="mt-4 pt-4 mx-2 border-t border-border">
-      <div className="w-2xl max-w-full mx-auto px-2 flex justify-between text-sm">
+    <footer className="my-4 pt-4 mx-2 border-t border-border">
+      <div className="w-2xl max-w-full mx-auto px-2 flex justify-between items-center text-sm">
         <div className="flex flex-col gap-2">
-          <span className="text-base">1sh - The URL shortener.</span>
+          <Link href="/">
+            <h2 className="font-black italic text-xl">1sh</h2>
+          </Link>
           <p className="text-muted-foreground">
             Copyright © {new Date().getFullYear()} Maciej Gomoła
             <br />
@@ -37,7 +39,7 @@ export function Footer() {
         </div>
 
         <p className="text-right">
-          {links.map((link, index) => (
+          {links.map((link) => (
             <span key={link.href}>
               <Link href={link.href}>{link.name}</Link>
               <br />

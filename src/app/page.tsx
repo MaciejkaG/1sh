@@ -1,6 +1,7 @@
 "use client";
 
 import { CreateLinkForm } from "@/components/CreateLinkForm";
+import { Nav } from "@/components/Nav";
 import ax from "@/lib/ax";
 import { z } from "zod";
 import { createLinkSchema } from "@/lib/schemas";
@@ -11,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangleIcon } from "lucide-react";
 import { Link } from "@/components/ui/link";
 
 export default function Home(): React.JSX.Element {
@@ -60,9 +60,14 @@ export default function Home(): React.JSX.Element {
   };
 
   return (
-    <div className="container mx-auto mt-4 text-center">
-      <h1 className="font-black italic text-2xl">1sh</h1>
-      <p>The URL shortener.</p>
+    <div className="container mx-auto mt-4">
+      <div className="mb-6">
+        <Nav />
+      </div>
+      <div className="text-center">
+        <h1 className="font-black italic text-2xl">1sh</h1>
+        <p>The URL shortener.</p>
+      </div>
       <CreateLinkForm handleSubmit={handleSubmit} isSubmitting={isSubmitting} />
       {resultLink && (
         <div className="mx-auto px-2 mt-4 w-sm max-w-full space-y-2">

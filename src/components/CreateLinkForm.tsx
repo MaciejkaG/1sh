@@ -16,9 +16,10 @@ import {
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { createLinkSchema } from "@/lib/schemas";
-import Link from "next/link";
+import { Link } from "./ui/link";
 import { Loader2Icon } from "lucide-react";
 import { useRef } from "react";
+import { useSession } from "@/lib/auth-client";
 
 export function CreateLinkForm({
   handleSubmit,
@@ -27,11 +28,14 @@ export function CreateLinkForm({
   handleSubmit: (values: z.infer<typeof createLinkSchema>) => Promise<boolean>;
   isSubmitting: boolean;
 }): React.JSX.Element {
+  const { data: session } = useSession();
+
   const form = useForm<z.infer<typeof createLinkSchema>>({
     resolver: zodResolver(createLinkSchema),
     defaultValues: {
       url: "",
       turnstileToken: "",
+      customSlug: "",
     },
   });
 
@@ -68,6 +72,7 @@ export function CreateLinkForm({
                 <FormControl className="flex-1">
                   <Input placeholder="https://example.com/" {...field} />
                 </FormControl>
+                {/* eslint-disable-next-line react-hooks/incompatible-library */}
                 <Button type="submit" disabled={!form.watch("turnstileToken")}>
                   {isSubmitting ? (
                     <Loader2Icon className="w-4 h-4" />
@@ -80,6 +85,26 @@ export function CreateLinkForm({
             </FormItem>
           )}
         />
+
+        {session && (
+          <FormField
+            control={form.control}
+            name="customSlug"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Custom slug (optional)</FormLabel>
+                <FormControl>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">1sh.pl/</span>
+                    <Input placeholder="myslug" className="flex-1" {...field} />
+                  </div>
+                </FormControl>
+                <FormDescription>3–32 chars: letters, digits, _ or -</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}
