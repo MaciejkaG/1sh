@@ -1,0 +1,1 @@
+ALTER TABLE "link" ADD COLUMN "blacklisted" boolean DEFAULT false NOT NULL;

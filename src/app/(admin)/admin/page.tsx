@@ -2,8 +2,6 @@ import { requireAdmin } from "@/lib/session";
 import { db } from "@/db/client";
 import { user, link, linkEvent, blacklist } from "@/db/schema";
 import { count as drizzleCount, gte } from "drizzle-orm";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 export default async function AdminPage() {
   await requireAdmin();
@@ -58,17 +56,6 @@ export default async function AdminPage() {
           </div>
         </div>
 
-        <div className="flex gap-4">
-          <Link href="/admin/links">
-            <Button>Manage Links</Button>
-          </Link>
-          <Link href="/admin/users">
-            <Button>Manage Users</Button>
-          </Link>
-          <Link href="/admin/blacklist">
-            <Button>Manage Blacklist</Button>
-          </Link>
-        </div>
       </div>
     </div>
   );

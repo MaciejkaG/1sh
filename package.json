@@ -37,6 +37,7 @@
     "recharts": "^3.8.1",
     "redis": "^5.12.1",
     "remark-gfm": "^4.0.1",
+    "resend": "^6.12.3",
     "tailwind-merge": "^3.6.0",
     "zod": "^4.4.3"
   },

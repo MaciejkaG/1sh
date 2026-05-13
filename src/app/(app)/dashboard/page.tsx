@@ -1,7 +1,7 @@
 import { requireUser } from "@/lib/session";
 import { db } from "@/db/client";
 import { link, linkEvent } from "@/db/schema";
-import { eq, count as drizzleCount } from "drizzle-orm";
+import { eq, and, count as drizzleCount } from "drizzle-orm";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { BarChart3, Edit, Trash2 } from "lucide-react";
@@ -19,7 +19,7 @@ export default async function DashboardPage() {
     })
     .from(link)
     .leftJoin(linkEvent, eq(link.id, linkEvent.linkId))
-    .where(eq(link.userId, session.user.id))
+    .where(and(eq(link.userId, session.user.id), eq(link.blacklisted, false)))
     .groupBy(link.id)
     .orderBy(link.createdAt);
 

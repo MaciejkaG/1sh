@@ -18,7 +18,7 @@ export async function GET(
     .where(and(eq(link.id, id), eq(link.userId, session.user.id)))
     .limit(1);
 
-  if (!linkRow.length) {
+  if (!linkRow.length || linkRow[0].blacklisted) {
     return NextResponse.json({ success: false, error: "Link not found." }, { status: 404 });
   }
 
@@ -69,7 +69,7 @@ export async function PATCH(
     .where(and(eq(link.id, id), eq(link.userId, session.user.id)))
     .limit(1);
 
-  if (!linkRow.length) {
+  if (!linkRow.length || linkRow[0].blacklisted) {
     return NextResponse.json({ success: false, error: "Link not found." }, { status: 404 });
   }
 
@@ -99,7 +99,7 @@ export async function DELETE(
     .where(and(eq(link.id, id), eq(link.userId, session.user.id)))
     .limit(1);
 
-  if (!linkRow.length) {
+  if (!linkRow.length || linkRow[0].blacklisted) {
     return NextResponse.json({ success: false, error: "Link not found." }, { status: 404 });
   }
 

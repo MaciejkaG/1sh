@@ -51,3 +51,19 @@ export async function getURL(linkId: string) {
   if (row.expiresAt && row.expiresAt < new Date()) return null;
   return row.url;
 }
+
+export async function getLinkInfo(linkId: string) {
+  const rows = await db
+    .select({ url: link.url, disabled: link.disabled, expiresAt: link.expiresAt, blacklisted: link.blacklisted })
+    .from(link)
+    .where(eq(link.id, linkId))
+    .limit(1);
+  const row = rows[0];
+  if (!row) return null;
+  return {
+    url: row.url,
+    blacklisted: row.blacklisted,
+    disabled: row.disabled,
+    expired: !!row.expiresAt && row.expiresAt < new Date(),
+  };
+}

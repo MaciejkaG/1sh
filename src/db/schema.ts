@@ -73,6 +73,7 @@ export const link = pgTable(
     userId: text("userId").references(() => user.id, { onDelete: "set null" }),
     custom: boolean("custom").notNull().default(false),
     disabled: boolean("disabled").notNull().default(false),
+    blacklisted: boolean("blacklisted").notNull().default(false),
     createdAt: timestamp("createdAt").notNull().defaultNow(),
     expiresAt: timestamp("expiresAt"),
   },
