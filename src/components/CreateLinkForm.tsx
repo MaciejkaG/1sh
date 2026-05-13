@@ -24,9 +24,11 @@ import { useSession } from "@/lib/auth-client";
 export function CreateLinkForm({
   handleSubmit,
   isSubmitting,
+  sitekey,
 }: {
   handleSubmit: (values: z.infer<typeof createLinkSchema>) => Promise<boolean>;
   isSubmitting: boolean;
+  sitekey: string;
 }): React.JSX.Element {
   const { data: session } = useSession();
 
@@ -113,7 +115,7 @@ export function CreateLinkForm({
             <FormItem>
               <FormControl>
                 <Turnstile
-                  sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                  sitekey={sitekey}
                   onVerify={(token: string) => {
                     field.onChange(token);
                   }}
