@@ -16,7 +16,7 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-52 shrink-0 border-r min-h-screen flex flex-col">
+    <aside className="w-52 shrink-0 border-r sticky top-0 h-screen flex flex-col">
       <div className="p-4 border-b">
         <Link href="/admin" className="font-bold text-lg tracking-tight">
           1sh Admin

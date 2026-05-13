@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { blacklistAddSchema } from "@/lib/schemas";
-import { Trash2 } from "lucide-react";
+import { Trash2, ShieldCheck } from "lucide-react";
 
 interface BlacklistPattern {
   id: number;
@@ -23,8 +23,14 @@ interface BlacklistPattern {
   reason?: string;
 }
 
+interface BlacklistedLink {
+  id: string;
+  url: string;
+}
+
 export default function AdminBlacklistPage() {
   const [patterns, setPatterns] = useState<BlacklistPattern[]>([]);
+  const [blacklistedLinks, setBlacklistedLinks] = useState<BlacklistedLink[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,8 +48,23 @@ export default function AdminBlacklistPage() {
       if (!response.ok) throw new Error("Failed to fetch patterns");
       const data = await response.json();
       setPatterns(data.patterns);
+      setBlacklistedLinks(data.blacklistedLinks ?? []);
     } catch {
       setError("Failed to load patterns");
+    }
+  };
+
+  const unblacklistLink = async (id: string) => {
+    try {
+      const response = await fetch(`/api/v1/admin/links/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "unblacklist" }),
+      });
+      if (!response.ok) throw new Error("Failed to unblacklist link");
+      await loadPatterns();
+    } catch {
+      setError("Failed to unblacklist link");
     }
   };
 
@@ -166,6 +187,31 @@ export default function AdminBlacklistPage() {
 
           {patterns.length === 0 && (
             <p className="text-muted-foreground">No patterns in blacklist.</p>
+          )}
+        </div>
+
+        <div>
+          <h2 className="text-lg font-bold mb-4">Blacklisted URLs</h2>
+          <div className="space-y-2 border rounded-lg divide-y">
+            {blacklistedLinks.map((l) => (
+              <div key={l.id} className="p-4 flex items-center justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                  <div className="font-mono text-sm font-semibold">{l.id}</div>
+                  <div className="text-xs text-muted-foreground truncate">{l.url}</div>
+                </div>
+                <button
+                  onClick={() => unblacklistLink(l.id)}
+                  className="text-green-600 hover:text-green-700 shrink-0"
+                  title="Remove from blacklist"
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {blacklistedLinks.length === 0 && (
+            <p className="text-muted-foreground">No individually blacklisted URLs.</p>
           )}
         </div>
       </div>

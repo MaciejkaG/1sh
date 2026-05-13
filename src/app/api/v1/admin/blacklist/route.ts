@@ -10,9 +10,12 @@ import { sendLinkBlacklistedEmail } from "@/lib/email";
 export async function GET() {
   await requireAdmin();
 
-  const patterns = await db.select().from(blacklist).orderBy(blacklist.createdAt);
+  const [patterns, blacklistedLinks] = await Promise.all([
+    db.select().from(blacklist).orderBy(blacklist.createdAt),
+    db.select({ id: link.id, url: link.url }).from(link).where(eq(link.blacklisted, true)),
+  ]);
 
-  return NextResponse.json({ success: true, patterns }, { status: 200 });
+  return NextResponse.json({ success: true, patterns, blacklistedLinks }, { status: 200 });
 }
 
 export async function POST(request: NextRequest) {

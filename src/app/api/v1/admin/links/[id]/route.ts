@@ -44,6 +44,9 @@ export async function PATCH(
       }
       break;
     }
+    case "unblacklist":
+      await db.update(link).set({ blacklisted: false }).where(eq(link.id, id));
+      break;
     default:
       return NextResponse.json({ success: false, error: "Unknown action." }, { status: 400 });
   }

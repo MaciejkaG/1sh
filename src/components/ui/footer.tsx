@@ -25,7 +25,7 @@ const links = [
 
 export function Footer() {
   return (
-    <footer className="my-4 pt-4 mx-2 border-t border-border">
+    <footer className="mb-4 pt-4 mx-2 border-t border-border">
       <div className="w-2xl max-w-full mx-auto px-2 flex justify-between items-center text-sm">
         <div className="flex flex-col gap-2">
           <Link href="/">

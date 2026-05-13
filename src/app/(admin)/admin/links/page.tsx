@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, ChevronLeft, ChevronRight, Ban, CheckCircle, Trash2, ShieldOff } from "lucide-react";
+import { Eye, ChevronLeft, ChevronRight, Ban, CheckCircle, Trash2, ShieldOff, ShieldCheck } from "lucide-react";
 
 interface AdminLink {
   id: string;
@@ -117,9 +117,13 @@ export default function AdminLinksPage() {
                     <CheckCircle className="w-3 h-3 mr-1" /> Enable
                   </Button>
                 )}
-                {!l.blacklisted && (
+                {!l.blacklisted ? (
                   <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700" onClick={() => action(l.id, "blacklist")}>
                     <ShieldOff className="w-3 h-3 mr-1" /> Blacklist
+                  </Button>
+                ) : (
+                  <Button size="sm" variant="outline" className="text-green-600 hover:text-green-700" onClick={() => action(l.id, "unblacklist")}>
+                    <ShieldCheck className="w-3 h-3 mr-1" /> Unblacklist
                   </Button>
                 )}
                 {confirming === l.id ? (

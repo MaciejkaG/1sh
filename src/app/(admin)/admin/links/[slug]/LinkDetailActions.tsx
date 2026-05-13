@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Ban, CheckCircle, Trash2, ShieldOff } from "lucide-react";
+import { Ban, CheckCircle, Trash2, ShieldOff, ShieldCheck } from "lucide-react";
 
 export function LinkDetailActions({
   slug,
@@ -59,7 +59,7 @@ export function LinkDetailActions({
             <CheckCircle className="w-3 h-3 mr-1" /> Enable
           </Button>
         )}
-        {!blacklisted && (
+        {!blacklisted ? (
           <Button
             variant="outline"
             size="sm"
@@ -67,6 +67,15 @@ export function LinkDetailActions({
             onClick={() => patch("blacklist")}
           >
             <ShieldOff className="w-3 h-3 mr-1" /> Blacklist
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-green-600 hover:text-green-700"
+            onClick={() => patch("unblacklist")}
+          >
+            <ShieldCheck className="w-3 h-3 mr-1" /> Unblacklist
           </Button>
         )}
         {confirming ? (
